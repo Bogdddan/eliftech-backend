@@ -26,7 +26,28 @@ async function getById(req, res, next) {
     }
 }
 
-function update(req, res, next) {
+async function update(req, res, next) {
+    const { id } = req.params;
+
+    const event = {
+        title: req.body.title,
+        description: req.body.description,
+        eventDate: req.body.eventDate,
+        organizer: req.body.organizer,
+    };
+
+    try {
+        const result = await Event.findByIdAndUpdate(id, event).exec();
+
+        if(result === null){
+            return res.status(404).send({message: 'Event not found'});
+        }
+
+        res.send(result);
+    } catch (error) {
+        next(error);
+    }
+
     return res.send("Update");
 }
 
@@ -48,15 +69,18 @@ async function create(req, res, next) {
 }
 
 async function remove(req, res, next) {
-    const {id} = req.params;
+    const { id } = req.params;
 
     const result = await Event.findByIdAndRemove(id).exec();
 
-    if (result === null) {
-        return res.status(404).send({ message: "Event not found" })
+    try {
+        if (result === null) {
+            return res.status(404).send({ message: "Event not found" })
+        }
+        res.status(204).end();
+    } catch (error) {
+        netx(error);
     }
-
-    res.status(204).end();
 }
 
 module.exports = {
