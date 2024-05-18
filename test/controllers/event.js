@@ -10,8 +10,16 @@ async function getAll(req, res, next) {
     }
 }
 
-function getById(req, res, next) {
-    return res.send("Get By id");
+async function getById(req, res, next) {
+    const { id } = req.params;
+
+    try {
+        const doc = await Event.findById(id).exec();
+
+        return res.send(doc);
+    } catch (error) {
+        next(error);
+    }
 }
 
 function update(req, res, next) {
