@@ -1,18 +1,24 @@
 const Event = require('../models/event');
 
-function getAll(req, res, next){
-    return res.send("Get All");
+async function getAll(req, res, next) {
+    try {
+        const docs = await Book.find().exec();
+
+        return res.send(docs);
+    } catch (error) {
+        next(error);
+    }
 }
 
-function getById(req, res, next){
+function getById(req, res, next) {
     return res.send("Get By id");
 }
 
-function update(req, res, next){
+function update(req, res, next) {
     return res.send("Update");
 }
 
-async function create(req, res, next){
+async function create(req, res, next) {
     const event = {
         title: req.body.title,
         description: req.body.description,
@@ -20,12 +26,16 @@ async function create(req, res, next){
         organizer: req.body.organizer,
     };
 
-    const doc = await Event.create(event);
+    try {
+        const doc = await Event.create(event);
 
-    return res.send(doc);
+        return res.send(doc);
+    } catch (error) {
+        next(error);
+    }
 }
 
-function remove(req, res, next){
+function remove(req, res, next) {
     return res.send("Get remove");
 }
 
