@@ -16,6 +16,10 @@ async function getById(req, res, next) {
     try {
         const doc = await Event.findById(id).exec();
 
+        if (doc === null) {
+            return res.status(404).send({ message: "Event not found" })
+        }
+
         return res.send(doc);
     } catch (error) {
         next(error);
@@ -43,8 +47,16 @@ async function create(req, res, next) {
     }
 }
 
-function remove(req, res, next) {
-    return res.send("Get remove");
+async function remove(req, res, next) {
+    const {id} = req.params;
+
+    const result = await Event.findByIdAndRemove(id).exec();
+
+    if (result === null) {
+        return res.status(404).send({ message: "Event not found" })
+    }
+
+    res.status(204).end();
 }
 
 module.exports = {
